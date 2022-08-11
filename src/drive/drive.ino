@@ -301,9 +301,9 @@ void drive() {
     stop();
   }
 
-  // forward(255);
-  // delay(5000);
-  // stop();
+  forward(255);
+  delay(5000);
+  stop();
   // delay(2000);
   // right(100);
   // delay(5000);
