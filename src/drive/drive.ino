@@ -19,7 +19,7 @@ const float beep_start[3] = {mC * 2, mD * 2, mE * 2};
 const float beep_end[3] = {mE * 2, mD * 2, mC * 2};
 const float beep_error[5] = {mE * 4, mE * 4, mE * 4, mE * 4, mE * 4};
 const float beep_ST_STANDBY[1]={mC*2};
-const float beep_grog[7]={mC*2,mD*2,mE*2,mF*2,mE*2,mD*2,mC*2};
+const float beep_grog[7]={mC*2,mD*2,mE*2,mF*2,mE*2,mD*2,mC*2,};
 
 MPU9250 mpu;
 TinyGPSPlus gps;
@@ -96,7 +96,7 @@ void setup() {
 
   beep(beep_wakeup, sizeof(beep_wakeup) / sizeof(float), 150);
   
-  beep(beep_grog,10,150);
+  //beep(beep_grog,sizeof(beep_grog)/sizeof(float),800);
 }
 
 /**
@@ -134,6 +134,7 @@ void loop() {
     led_state=!led_state;
     digitalWrite(pin_led, led_state);
     goal();
+    song();
     break;
   
   default:
@@ -557,4 +558,51 @@ void tone(int pin, int freq, int t_ms) {
 
 void noTone(int pin) {
   ledcWriteTone(CHANNEL_C, 0.0);
+}
+
+void song2(void){
+  // チャルメラ
+  // ソラシ〜ラソ〜
+  // ソラシラソラ〜
+  tone(pin_speaker,mG,300);
+  tone(pin_speaker,mA,300);
+}
+
+void song(void) {
+  tone(pin_speaker, mC, 300);
+  tone(pin_speaker,mD, 300);
+  tone(pin_speaker,mE, 300);
+  tone(pin_speaker,mF,300);
+  tone(pin_speaker,mE,300);
+  tone(pin_speaker,mD,300);
+  tone(pin_speaker,  mC, 300);
+  tone(pin_speaker, 0, 300);
+  noTone(pin_speaker);
+  tone(pin_speaker,  mE,300);
+  tone(pin_speaker,  mF,300);
+  tone(pin_speaker,  mG,300);
+  tone(pin_speaker,  mA,300);
+  tone(pin_speaker,  mG,300);
+  tone(pin_speaker,  mF,300);
+  tone(pin_speaker,  mE,300);
+  tone(pin_speaker, 0, 300);
+  noTone(pin_speaker);
+  
+  tone(pin_speaker,  mC,600);
+  tone(pin_speaker,  mC,600);
+  tone(pin_speaker,  mC,600);
+  tone(pin_speaker,  mC,600);
+
+  tone(pin_speaker,  mC,150);
+  tone(pin_speaker,  mC,150);
+  tone(pin_speaker,  mD,150);
+  tone(pin_speaker,  mD,150);
+  tone(pin_speaker,  mE,150);
+  tone(pin_speaker,  mE,150);
+  tone(pin_speaker,  mF,150);
+  tone(pin_speaker,  mF,150);
+  tone(pin_speaker, mE, 300);
+  tone(pin_speaker, mD, 300);
+  tone(pin_speaker, mC, 300);
+  noTone(pin_speaker);
 }
