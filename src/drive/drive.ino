@@ -49,6 +49,9 @@ const int LEDC_TIMER_13_BIT   = 13;
 const int LEDC_BASE_FREQ_490  = 490;
 const int LEDC_BASE_FREQ_5000 = 490;
 
+float goal_lat = 35.676975;
+float goal_lng = 139.475372;
+
 volatile byte led_state = LOW;
 volatile long interrupt_prev_ms = millis();
 
@@ -103,6 +106,14 @@ void setup() {
 void loop() {
   switch (state)
   {
+  if (gps.location.lat() < goal_lat - 0.000005 && goal_lat + 1 < gps.location.lat() + 0.000005) {
+    if (gps.location.lng() < goal_lng - 0.000005 && goal_lng + 1 < gps.location.lng() + 0.000005) {
+      state = ST_GOAL;
+    }
+      if (gps.location.lng() < goal_lng - 0.000005 && goal_lng + 1 < gps.location.lng() + 0.000005) {
+          state = ST_GOAL;
+      }
+  }
   case ST_STAND_BY:
     Serial.println("*** ST_STAND_BY ***");
     //beep(const float *mm, int m_size, int t_ms) {
@@ -270,14 +281,33 @@ void stand_by() {
 
 /** 目標地点へ走行 */
 void drive() {
-  forward(255);
-  delay(5000);
-  stop();
-  delay(2000);
-  right(100);
-  delay(5000);
-  left(100);
-  delay(2000);
+  double course2goal = gps.courseTo(gps.location.lat(), gps.location.lng(), goal_lat, goal_lng);
+  Serial.print("course2goal: "); Serial.println(course2goal);
+  // cansatの向きと比較
+  double course_diff = course2goal - sensorVal.yaw;
+  Serial.print("yaw: "); Serial.println(sensorVal.yaw);
+  Serial.print("course_diff: "); Serial.println(course_diff);
+  // ゴールへ方向転換
+  if (course_diff > 0) {
+    Serial.println("turn right");
+    right(100);
+    delay((int)(14 * abs(course_diff)));  // 旋回の秒数は目標地点の方角と機体の向きの差に応じて変化させる（14という値は実験してちょうどいい値を見つけて設定した）
+    stop();
+  } else {
+    Serial.println("turn left");
+    left(100);
+    delay((int)(14 * abs(course_diff)));
+    stop();
+  }
+
+  // forward(255);
+  // delay(5000);
+  // stop();
+  // delay(2000);
+  // right(100);
+  // delay(5000);
+  // left(100);
+  // delay(2000);
 }
 
 /** 目標地点に到着 */
