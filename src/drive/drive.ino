@@ -55,9 +55,6 @@ float goal_lng = 139.475372;
 volatile byte led_state = LOW;
 volatile long interrupt_prev_ms = millis();
 
-float goal_lat = 35.676975;
-float goal_lng = 139.475372;
-
 struct SensorVal {
   float roll;
   float pitch;
@@ -104,6 +101,44 @@ void setup() {
  * loop関数
  * 繰り返し実行される
  */
+ void song(void) {
+  tone(pin_speaker, mC, 300);
+  tone(pin_speaker,mD, 300);
+  tone(pin_speaker,mE, 300);
+  tone(pin_speaker,mF,300);
+  tone(pin_speaker,mE,300);
+  tone(pin_speaker,mD,300);
+  tone(pin_speaker,  mC, 300);
+  tone(pin_speaker, 0, 300);
+  noTone(pin_speaker);
+  tone(pin_speaker,  mE,300);
+  tone(pin_speaker,  mF,300);
+  tone(pin_speaker,  mG,300);
+  tone(pin_speaker,  mA,300);
+  tone(pin_speaker,  mG,300);
+  tone(pin_speaker,  mF,300);
+  tone(pin_speaker,  mE,300);
+  tone(pin_speaker, 0, 300);
+  noTone(pin_speaker);
+  
+  tone(pin_speaker,  mC,600);
+  tone(pin_speaker,  mC,600);
+  tone(pin_speaker,  mC,600);
+  tone(pin_speaker,  mC,600);
+
+  tone(pin_speaker,  mC,150);
+  tone(pin_speaker,  mC,150);
+  tone(pin_speaker,  mD,150);
+  tone(pin_speaker,  mD,150);
+  tone(pin_speaker,  mE,150);
+  tone(pin_speaker,  mE,150);
+  tone(pin_speaker,  mF,150);
+  tone(pin_speaker,  mF,150);
+  tone(pin_speaker, mE, 300);
+  tone(pin_speaker, mD, 300);
+  tone(pin_speaker, mC, 300);
+  noTone(pin_speaker);
+}
 void loop() {
   switch (state)
   {
@@ -135,6 +170,7 @@ void loop() {
     led_state=!led_state;
     digitalWrite(pin_led, led_state);
     goal();
+    song();
     break;
   
   default:
@@ -290,14 +326,14 @@ void drive() {
   Serial.print("course_diff: "); Serial.println(course_diff);
   // ゴールへ方向転換
   if (course_diff > 0) {
-    Serial.println("turn right");
-    right(100);
-    delay((int)(14 * abs(course_diff)));  // 旋回の秒数は目標地点の方角と機体の向きの差に応じて変化させる（14という値は実験してちょうどいい値を見つけて設定した）
-    stop();
-  } else {
     Serial.println("turn left");
     left(100);
     delay((int)(14 * abs(course_diff)));
+    stop();
+  } else {
+    Serial.println("turn right");
+    right(100);
+    delay((int)(14 * abs(course_diff)));  // 旋回の秒数は目標地点の方角と機体の向きの差に応じて変化させる（14という値は実験してちょうどいい値を見つけて設定した）
     stop();
   }
 
